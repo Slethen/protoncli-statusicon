@@ -1,9 +1,15 @@
 import wx
+import commands
 
+# define our basic information
 TRAY_TOOLTIP = 'ProtonVPN-CLI Status'
 TRAY_ICON_CONNECTED = 'connected.png'
 TRAY_ICON_DISCONNECTED = 'disconnected.png'
 
+if 'openvpn' in commands.getoutput('ps -A'):
+    print 'Your process is running.'
+
+# let's set up our window functions
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
     menu.Bind(wx.EVT_MENU, func, id=item.GetId())
@@ -14,7 +20,7 @@ class TaskBarIcon(wx.TaskBarIcon):
     def __init__(self, frame):
         self.frame = frame
         super(TaskBarIcon, self).__init__()
-        self.set_icon(TRAY_ICON)
+        self.set_icon(TRAY_ICON_CONNECTED)
         self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 
     def CreatePopupMenu(self):
