@@ -1,7 +1,8 @@
 import wx
 
-TRAY_TOOLTIP = 'System Tray Demo'
-TRAY_ICON = 'connected.png'
+TRAY_TOOLTIP = 'ProtonVPN-CLI Status'
+TRAY_ICON_CONNECTED = 'connected.png'
+TRAY_ICON_DISCONNECTED = 'disconnected.png'
 
 def create_menu_item(menu, label, func):
     item = wx.MenuItem(menu, -1, label)
