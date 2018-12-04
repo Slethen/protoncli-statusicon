@@ -3,4 +3,4 @@ Gnome Status Icon for ProtonVPN-CLI - in Development
 
 Goals:
 
-1. Icons in Gnome system tray for connected <img src="https://github.com/x86txt/protoncli-statusicon/blob/master/connected.png" width="5%" height="5%">
+1. Icons in Gnome system tray for connected <img src="https://github.com/x86txt/protoncli-statusicon/blob/master/connected.png" width="3%" height="3%"> and disconnected <img src="https://github.com/x86txt/protoncli-statusicon/blob/master/disconnected.png" width="3%" height="3%">
