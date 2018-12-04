@@ -1,2 +1,2 @@
 # protoncli-statusicon
-Gnome Status Icon for ProtonVPN-CLI
+Gnome Status Icon for ProtonVPN-CLI - in Development
