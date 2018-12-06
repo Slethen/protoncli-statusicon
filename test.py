@@ -4,7 +4,6 @@ import requests
 import json
 import time
 from threading import Thread
-import schedule
 
 # define our basic information
 TRAY_TOOLTIP = 'ProtonVPN-CLI Status'
