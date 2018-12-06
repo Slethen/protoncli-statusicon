@@ -1,5 +1,10 @@
 import wx
 import commands
+import requests
+import json
+import time
+from threading import Thread
+import schedule
 
 # define our basic information
 TRAY_TOOLTIP = 'ProtonVPN-CLI Status'
@@ -23,6 +28,27 @@ class TaskBarIcon(wx.TaskBarIcon):
         self.set_icon(TRAY_ICON_CONNECTED)
         self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 
+        # Start thread for status function
+        self.thread = Thread(target=self.status)
+        self.thread.daemon = True
+        self.thread.start()
+
+    # Get current status then set TRY_ICON
+    def status(self):
+        while True:
+            try:
+                time.sleep(2)
+                send_url = 'http://dl.slethen.io/api.php'
+                r = requests.get(send_url)
+                j = json.loads(r.text)
+
+                if "True" in str(j):
+                    self.set_icon(TRAY_ICON_CONNECTED)
+
+                if "False" in str(j):
+                    self.set_icon(TRAY_ICON_DISCONNECTED)
+            except Exception as e: print(e), "Error in status function"
+
     def CreatePopupMenu(self):
         menu = wx.Menu()
         create_menu_item(menu, 'Say Hello', self.on_hello)
@@ -36,6 +62,19 @@ class TaskBarIcon(wx.TaskBarIcon):
 
     def on_left_down(self, event):
         print 'Tray icon was left-clicked.'
+        while True:
+            time.sleep(2)
+            send_url = 'http://dl.slethen.io/api.php'
+            r = requests.get(send_url)
+            j = json.loads(r.text)
+
+            if "True" in str(j):
+                print 'True'
+                self.set_icon(TRAY_ICON_CONNECTED)
+
+            if "False" in str(j):
+                print 'False'
+                self.set_icon(TRAY_ICON_DISCONNECTED)
 
     def on_hello(self, event):
         print 'Hello, world!'
@@ -54,7 +93,6 @@ class App(wx.App):
 def main():
     app = App(False)
     app.MainLoop()
-
 
 if __name__ == '__main__':
     main()
