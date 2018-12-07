@@ -31,7 +31,7 @@ class TaskBarIcon(wx.TaskBarIcon):
     def __init__(self, frame):
         self.frame = frame
         super(TaskBarIcon, self).__init__()
-        self.set_icon(TRAY_ICON_CONNECTED)
+        self.set_icon(TRAY_ICON_DISCONNECTED)
         self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 
         # Start thread for connectionStatus
