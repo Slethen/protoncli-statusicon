@@ -61,19 +61,6 @@ class TaskBarIcon(wx.TaskBarIcon):
 
     def on_left_down(self, event):
         print 'Tray icon was left-clicked.'
-        while True:
-            time.sleep(2)
-            send_url = 'http://dl.slethen.io/api.php'
-            r = requests.get(send_url)
-            j = json.loads(r.text)
-
-            if "True" in str(j):
-                print 'True'
-                self.set_icon(TRAY_ICON_CONNECTED)
-
-            if "False" in str(j):
-                print 'False'
-                self.set_icon(TRAY_ICON_DISCONNECTED)
 
     def on_hello(self, event):
         print 'Hello, world!'
