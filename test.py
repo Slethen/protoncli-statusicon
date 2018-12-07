@@ -4,11 +4,18 @@ import requests
 import json
 import time
 from threading import Thread
+import sys
 
 # define our basic information
 TRAY_TOOLTIP = 'ProtonVPN-CLI Status'
 TRAY_ICON_CONNECTED = 'connected.png'
 TRAY_ICON_DISCONNECTED = 'disconnected.png'
+
+# Initialise networkChanged
+# Variable used to store connection state after each run of the status function.
+# Only when variable changes will the UI update to prevent locking the UI.
+global networkChanged
+networkChanged = False
 
 if 'openvpn' in commands.getoutput('ps -A'):
     print 'Your process is running.'
@@ -24,29 +31,43 @@ class TaskBarIcon(wx.TaskBarIcon):
     def __init__(self, frame):
         self.frame = frame
         super(TaskBarIcon, self).__init__()
-        self.set_icon(TRAY_ICON_DISCONNECTED)
+        self.set_icon(TRAY_ICON_CONNECTED)
         self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.on_left_down)
 
-        # Start thread for status function
+        # Start thread for connectionStatus
         self.thread = Thread(target=self.status)
         self.thread.daemon = True
         self.thread.start()
 
-    # Get current status then set TRY_ICON
+    # Get ProtonVPN connection status from API
     def status(self):
+        global networkChanged
+        retries = 1
         while True:
+            print "Current Status", str(networkChanged) + " - No UI update"
             try:
                 time.sleep(2)
                 send_url = 'http://dl.slethen.io/api.php'
                 r = requests.get(send_url)
                 j = json.loads(r.text)
 
-                if "True" in str(j):
-                    self.set_icon(TRAY_ICON_CONNECTED)
+                if str(j) != networkChanged:
+                    networkChanged = str(j)
 
-                if "False" in str(j):
-                    self.set_icon(TRAY_ICON_DISCONNECTED)
-            except Exception as e: print(e), "Error in status function"
+                    if "True" in str(j):
+                        print "ProtonVPN Connected - Update UI"
+                        self.set_icon(TRAY_ICON_CONNECTED)
+
+                    if "False" in str(j):
+                        print "ProtonVPN Disconnected - Update UI"
+                        self.set_icon(TRAY_ICON_DISCONNECTED)
+
+            except Exception as e:
+                wait = retries * 1;
+                print 'Error! Waiting %s secs and re-trying...' % wait
+                sys.stdout.flush()
+                time.sleep(wait)
+                retries += 1
 
     def CreatePopupMenu(self):
         menu = wx.Menu()
